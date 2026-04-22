@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FlyAkeed — See Your Travel ROI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--navy:#192071;--navy2:#252D85;--navy3:#2F3999;--navy-deep:#0F1550;--pink:#FF5FA5;--pink2:#FF7BB5;--pink-dark:#E8478D;--blue:#006FFF;--blue2:#3389FF;--blue-light:#E6F0FF;--teal:#1D9E75;--teal2:#15B585;--teal-light:#E8F7F2;--bg:#F3F4FA;--surface:#FFFFFF;--surface2:#F8F9FD;--border:#DDE0F0;--border2:#C3C7E0;--text:#192071;--text2:#4A5288;--text3:#8A90B5;--r:12px;--rs:8px;--shadow:0 2px 8px rgba(25,32,113,.07),0 1px 2px rgba(25,32,113,.04);}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;min-height:100vh;}
+.hdr{background:var(--navy);position:relative;overflow:hidden;}
+.hdr-deco{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.hdr-deco span{position:absolute;border-radius:50%;filter:blur(2px);}
+.hdr-deco span:nth-child(1){width:440px;height:440px;background:var(--pink);top:-150px;right:-90px;opacity:.15;}
+.hdr-deco span:nth-child(2){width:320px;height:320px;background:var(--blue);bottom:-120px;left:5%;opacity:.18;}
+.hdr-deco span:nth-child(3){width:180px;height:180px;background:var(--pink2);top:30%;left:35%;opacity:.06;}
+.hdr-inner{max-width:1000px;margin:0 auto;padding:32px 24px 0;position:relative;z-index:2;}
+.logo{display:flex;align-items:center;gap:10px;margin-bottom:36px;}
+.hdr-copy h1{font-family:'Manrope',sans-serif;font-size:clamp(22px,3.5vw,36px);font-weight:900;color:#fff;line-height:1.15;margin-bottom:10px;}
+.hdr-copy h1 em{color:var(--pink);font-style:normal;}
+.hdr-copy p{color:rgba(255,255,255,.65);font-size:14px;max-width:600px;margin-bottom:18px;}
+.hdr-badges{display:flex;gap:7px;flex-wrap:wrap;padding-bottom:32px;}
+.hbadge{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.85);font-size:11px;font-weight:500;padding:4px 11px;border-radius:20px;}
+.hbadge.green{background:rgba(29,158,117,.2);border-color:rgba(29,158,117,.4);color:#5DCAA5;}
+.hbadge.pink{background:rgba(255,95,165,.15);border-color:rgba(255,95,165,.35);color:#FFB3D1;}
+.proof{background:var(--navy-deep);border-top:1px solid rgba(255,255,255,.06);position:relative;}
+.proof::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--pink) 0%,var(--blue) 50%,var(--pink) 100%);opacity:.6;}
+.proof-inner{max-width:1000px;margin:0 auto;padding:14px 24px;display:flex;gap:0;overflow-x:auto;}
+.proof-item{flex:1;min-width:110px;text-align:center;padding:0 12px;border-right:1px solid rgba(255,255,255,.08);}
+.proof-item:last-child{border:none;}
+.proof-num{font-family:'Manrope',sans-serif;font-size:17px;font-weight:800;color:#fff;}
+.proof-num em{color:var(--pink);font-style:normal;}
+.proof-lbl{font-size:10px;color:rgba(255,255,255,.45);margin-top:1px;white-space:nowrap;}
+.main{max-width:1000px;margin:0 auto;padding:24px 24px 60px;}
+.tabs{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:4px;margin-bottom:20px;width:fit-content;box-shadow:var(--shadow);}
+.tab{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;padding:7px 22px;border-radius:9px;border:none;cursor:pointer;background:transparent;color:var(--text2);transition:all .2s;}
+.tab.active{background:var(--navy);color:#fff;box-shadow:0 2px 8px rgba(25,32,113,.3);}
+.slbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.09em;margin-bottom:12px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:22px;box-shadow:var(--shadow);margin-bottom:14px;}
+.igrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;}
+.igrp{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:12px 14px;transition:border-color .18s;}
+.igrp:focus-within{border-color:var(--navy3);}
+.igrp label{display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:5px;}
+.igrp input[type=number]{width:100%;font-family:'Manrope',sans-serif;font-size:18px;font-weight:700;color:var(--navy);background:transparent;border:none;outline:none;padding:0;}
+.igrp .hint{font-size:10px;color:var(--text3);margin-top:3px;}
+.source-tag{display:inline-block;font-size:9px;font-weight:600;padding:1px 6px;border-radius:8px;letter-spacing:.03em;margin-left:4px;}
+.st-fa{background:var(--teal-light);color:var(--teal);}
+.st-ind{background:var(--blue-light);color:var(--blue);}
+.st-you{background:#F0F0F5;color:var(--text3);}
+.sgrp{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:12px 14px;}
+.sgrp label{display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:7px;}
+.sval-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;}
+.sval{font-family:'Manrope',sans-serif;font-size:18px;font-weight:700;color:var(--navy);}
+.sbench{font-size:10px;color:var(--teal);font-weight:600;}
+input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:var(--border);outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--pink);border:3px solid #fff;box-shadow:0 1px 6px rgba(255,95,165,.45);cursor:pointer;}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--pink);border:3px solid #fff;box-shadow:0 1px 6px rgba(255,95,165,.45);cursor:pointer;}
+.sbounds{display:flex;justify-content:space-between;font-size:9px;color:var(--text3);margin-top:4px;}
+.chkrow{display:flex;align-items:center;gap:8px;padding:10px 0;border-top:1px solid var(--border);margin-top:10px;}
+.chkrow input[type=checkbox]{width:16px;height:16px;accent-color:var(--pink);cursor:pointer;}
+.chkrow label{font-size:12px;color:var(--text);cursor:pointer;font-weight:500;}
+.pgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+@media(max-width:640px){.pgrid{grid-template-columns:repeat(3,1fr);}}
+.pcard{border:1.5px solid var(--border);border-radius:var(--rs);padding:12px 8px;text-align:center;position:relative;}
+.pcard.rec{border-color:var(--pink);background:#FFF4F9;box-shadow:0 0 0 3px rgba(255,95,165,.12);}
+.prec-badge{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:var(--pink);color:#fff;font-size:9px;font-weight:700;padding:2px 9px;border-radius:10px;letter-spacing:.04em;}
+.pname{font-size:10px;font-weight:600;color:var(--text2);margin-bottom:4px;}
+.pprice{font-family:'Manrope',sans-serif;font-size:13px;font-weight:800;}
+.pcap{font-size:9px;color:var(--text3);margin-top:2px;}
+
+/* Dual pricing panel */
+.pricing-compare{margin-top:14px;padding:14px;background:linear-gradient(135deg,#FFF4F9 0%,#E6F0FF 100%);border:1px solid var(--pink2);border-radius:var(--rs);}
+.pc-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px;}
+.pc-title{font-size:11px;font-weight:700;color:var(--pink-dark);text-transform:uppercase;letter-spacing:.07em;}
+.pc-tag{background:var(--pink);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:8px;letter-spacing:.04em;}
+.pc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+@media(max-width:520px){.pc-grid{grid-template-columns:1fr;}}
+.pc-option{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--rs);padding:11px 13px;cursor:pointer;transition:all .15s;}
+.pc-option:hover{border-color:var(--pink2);}
+.pc-option.selected{border-color:var(--pink);background:#FFF;box-shadow:0 0 0 2px rgba(255,95,165,.15);}
+.pc-opt-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.pc-opt-name{font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;}
+.pc-opt-radio{width:14px;height:14px;border-radius:50%;border:2px solid var(--border2);}
+.pc-option.selected .pc-opt-radio{border-color:var(--pink);background:radial-gradient(circle,var(--pink) 35%,transparent 38%);}
+.pc-opt-price{font-family:'Manrope',sans-serif;font-size:18px;font-weight:800;color:var(--text);}
+.pc-opt-basis{font-size:10px;color:var(--text3);margin-top:2px;}
+.pc-explain{font-size:11px;color:var(--text);background:rgba(255,255,255,.6);border-radius:var(--rs);padding:9px 11px;line-height:1.5;}
+.pc-explain strong{color:var(--pink-dark);}
+.pc-rate-slider{margin-top:10px;}
+.pc-rate-slider label{font-size:10px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;}
+.pc-rate-row{display:flex;align-items:center;gap:10px;}
+.pc-rate-row input[type=range]{flex:1;}
+.pc-rate-val{font-family:'Manrope',sans-serif;font-size:14px;font-weight:800;color:var(--pink-dark);min-width:40px;text-align:right;}
+
+/* Commercial config */
+.radio-group{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.radio-opt{background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--rs);padding:10px 12px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:8px;}
+.radio-opt:hover{border-color:var(--pink2);}
+.radio-opt.selected{border-color:var(--pink);background:#FFF;box-shadow:0 0 0 2px rgba(255,95,165,.12);}
+.radio-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--border2);flex-shrink:0;}
+.radio-opt.selected .radio-dot{border-color:var(--pink);background:radial-gradient(circle,var(--pink) 35%,transparent 38%);}
+.radio-body{flex:1;min-width:0;}
+.radio-title{font-size:11px;font-weight:600;color:var(--text);}
+.radio-sub{font-size:10px;color:var(--text3);margin-top:1px;}
+
+.tx-input-row{margin-top:10px;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);}
+.tx-input-row label{display:block;font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;}
+.tx-slider-row{display:flex;align-items:center;gap:10px;}
+.tx-slider-row input[type=range]{flex:1;}
+.tx-slider-val{font-family:'Manrope',sans-serif;font-size:15px;font-weight:800;color:var(--pink-dark);min-width:55px;text-align:right;}
+.tx-num-input{width:100%;font-family:'Manrope',sans-serif;font-size:16px;font-weight:700;color:var(--navy);background:transparent;border:none;outline:none;padding:0;border-bottom:1px solid var(--border2);padding-bottom:3px;}
+
+.payment-note{margin-top:8px;font-size:10px;color:var(--text3);line-height:1.5;padding:8px 10px;background:var(--blue-light);border-radius:var(--rs);border-left:2px solid var(--blue);}
+.payment-note strong{color:var(--blue);}
+
+/* Cost breakdown in results */
+.cost-breakdown{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:14px;box-shadow:var(--shadow);}
+.cost-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:12px;border-bottom:1px solid var(--border);}
+.cost-row:last-of-type{border:none;}
+.cost-row .cl{color:var(--text2);display:flex;align-items:center;gap:6px;}
+.cost-row .cv{font-family:'Manrope',sans-serif;font-weight:700;color:var(--text);}
+.cost-row .cv.uplift{color:var(--pink-dark);}
+.cost-total{display:flex;justify-content:space-between;align-items:center;padding-top:10px;margin-top:4px;border-top:2px solid var(--border2);}
+.cost-total .ctl{font-size:13px;font-weight:700;color:var(--text);}
+.cost-total .ctv{font-family:'Manrope',sans-serif;font-size:18px;font-weight:800;color:var(--pink-dark);}
+
+.wallet-save{margin-top:10px;padding:9px 12px;background:var(--teal-light);border-radius:var(--rs);border-left:2px solid var(--teal);font-size:11px;color:var(--text);line-height:1.5;}
+.wallet-save strong{color:var(--teal);}
+.mrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px;}
+.mc{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:13px 15px;}
+.mc .ml{font-size:10px;font-weight:600;color:var(--text3);margin-bottom:3px;text-transform:uppercase;letter-spacing:.05em;}
+.mc .mv{font-family:'Manrope',sans-serif;font-size:22px;font-weight:800;color:var(--text);}
+.mc .mv.g{color:var(--teal);}
+.mc .mv.r{color:var(--pink-dark);}
+.mc .mv.b{color:var(--blue);}
+.bstack{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;margin-bottom:14px;box-shadow:var(--shadow);}
+.bstack-hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;flex-wrap:wrap;gap:6px;}
+.bstack-title{font-size:12px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.07em;}
+.bstack-sub{font-size:10px;color:var(--text3);}
+.stack-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.stack-row:last-of-type{border:none;}
+.stack-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.stack-label{flex:1;min-width:0;}
+.stack-label .main{font-size:12px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.stack-label .source{font-size:10px;color:var(--text3);margin-top:2px;line-height:1.5;}
+.stack-val{font-family:'Manrope',sans-serif;font-size:14px;font-weight:800;text-align:right;min-width:95px;}
+.stack-val.g{color:var(--teal);}
+.stack-total{display:flex;justify-content:space-between;align-items:center;padding-top:12px;margin-top:4px;border-top:2px solid var(--border2);}
+.stack-total .lbl{font-size:13px;font-weight:700;color:var(--text);}
+.stack-total .val{font-family:'Manrope',sans-serif;font-size:20px;font-weight:800;color:var(--teal);}
+.svgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;}
+.svitem{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:12px;}
+.sviicon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;}
+.sviicon svg{width:14px;height:14px;}
+.svititle{font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.svidesc{font-size:11px;color:var(--text2);line-height:1.5;}
+.proof2{background:linear-gradient(135deg,var(--navy-deep) 0%,var(--navy) 60%,var(--navy2) 100%);border-radius:var(--r);padding:22px;margin-bottom:14px;position:relative;overflow:hidden;}
+.proof2::before{content:'';position:absolute;top:0;right:0;width:180px;height:180px;background:radial-gradient(circle,rgba(255,95,165,.2) 0%,transparent 70%);}
+.proof2::after{content:'';position:absolute;bottom:-40px;left:-20px;width:160px;height:160px;background:radial-gradient(circle,rgba(0,111,255,.2) 0%,transparent 70%);}
+.proof2-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:12px;position:relative;z-index:1;}
+.p2item{text-align:center;}
+.p2num{font-family:'Manrope',sans-serif;font-size:20px;font-weight:800;color:#fff;}
+.p2num em{color:var(--pink);font-style:normal;}
+.p2lbl{font-size:10px;color:rgba(255,255,255,.55);margin-top:2px;}
+.insight{background:linear-gradient(90deg,#FFF4F9 0%,#E6F0FF 100%);border-left:3px solid var(--pink);border-radius:var(--rs);padding:14px 18px;margin-bottom:14px;}
+.insight-hd{font-size:10px;font-weight:700;color:var(--pink);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;}
+.insight-txt{font-size:13px;color:var(--text);line-height:1.55;}
+.cta{background:linear-gradient(120deg,var(--navy-deep) 0%,var(--navy) 55%,var(--navy3) 100%);border-radius:var(--r);padding:22px;margin-top:14px;position:relative;overflow:hidden;}
+.cta::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(255,95,165,.3) 0%,transparent 60%);}
+.cta > *{position:relative;z-index:1;}
+.cta p{font-size:12px;color:rgba(255,255,255,.7);margin-bottom:14px;line-height:1.55;max-width:600px;}
+.ctarow{display:flex;gap:9px;flex-wrap:wrap;}
+.ctabtn{font-family:'Inter',sans-serif;font-size:12px;font-weight:500;padding:9px 18px;border-radius:var(--rs);cursor:pointer;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;text-decoration:none;display:inline-block;}
+.ctabtn.primary{background:var(--pink);border-color:var(--pink);font-weight:600;box-shadow:0 4px 14px rgba(255,95,165,.4);}
+.navbtn{font-family:'Inter',sans-serif;font-size:13px;font-weight:600;padding:11px 30px;border-radius:var(--rs);border:none;cursor:pointer;background:var(--navy);color:#fff;box-shadow:0 4px 14px rgba(25,32,113,.3);margin-top:16px;}
+.navbtn.ghost{background:transparent;color:var(--text2);box-shadow:none;border:1px solid var(--border);margin-top:10px;}
+.disc{font-size:10px;color:var(--text3);line-height:1.7;margin-top:14px;padding:14px 16px;background:var(--surface2);border-radius:var(--rs);border:1px solid var(--border);}
+.disc strong{color:var(--text2);}
+.disc-list{margin-top:6px;padding-left:14px;}
+.disc-list li{margin-bottom:3px;}
+.footer{max-width:1000px;margin:0 auto;padding:0 24px 30px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.footer-logo{display:flex;align-items:center;gap:8px;}
+.footer p{font-size:11px;color:var(--text3);}
+@media(max-width:500px){.main{padding:20px 12px 40px;}.card{padding:14px;}}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-deco"><span></span><span></span><span></span></div>
+  <div class="hdr-inner">
+    <div class="logo"><img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCABOAOwDASIAAhEBAxEB/8QAGgABAAMBAQEAAAAAAAAAAAAAAAYHCAUEA//EAEgQAAECBQIEAwIICQoHAAAAAAECAwAEBQYRBxIIEyExFEFhIlEVFjJxgZGT4TM3OFJVYnOyszVCcnaCg4SxtMEjJENTdaGi/8QAGwEBAAMBAQEBAAAAAAAAAAAAAAECBAMFBgf/xAAyEQABBAAEAwYFAwUAAAAAAAABAAIDEQQSITEFE3EGMkFRYYEUobHB0QcVUiIjNFOR/9oADAMBAAIRAxEAPwDOMIQj9DXnpCEIIkIQgiQhCCJCEIIkIQgiQhCCJCEIIkIQgiQhCCJCEIIkIQgiQhCCJCEIIkIQgiQhCCJH3lJKdmyRKSkxMY78psq/yj4Rq1xseCW22gDLZCUgY8ow43GfDZaF2voeAcCHFTJb8uSvC7u/X0WUoRN5DS67JnBdYlZQH/vPg/u5jvyGjjpwZ+toT70ssE/+yR/lF34/Ds3d91wg7O8Tm7sJHXT60qphHavijsUG6JukyzrjrTGzC3MbjlCVHt6mJBoPZtNv7U2nWvVpibl5SabeUtyVUlLgKGlLGCoEd0jyjsZmiPm+FWvLmgfDK6J+4JB6jRQWEbGqHDFpNTnks1C86zJuqTuCH5+VbUU5Izgtduh+qIVq/onphaunNWr9AvGcn6lKJbLEu5UJZxKyp1CTlKEBR6KJ6HyjHHxSCRwaL19FUxOCzdCNFzWg9qNcPI1ETU60aoaOie5Jda5G8gEjHL3bev52fWM6RqgxDJ7yeBpVc0t3SEIR3VUhGjuHnh8od/WALnuSoVeTVMTTiJREmttKVNIwkqO9Cuu8LHT3RXfEXpsxplfTdIp783M0yalETEq9MlJWepStJKQASFJJ7DoRGVmNifMYQdQrlhAtVrCLW4aNNaLqddlSpFcnKhKsSsgZlCpNaEqKuYhODuSoYwo+UR7XG0qfYuqFXtalPzT8nJcnluTKklw72ULOSkAd1Hy7RcYhhlMI3AtRlNWoVCEI7qqQhCCJCEIIkIRavDRptRdTrtqVIrk5UJViVkDMoVJrQlRVzEJwdyVDGFHyjnNK2Jhe7YKQLNBVVCJrrlaVPsXVKsWrSn5qYk5HkctyZUkuHew24clIA7rPl2xEKi0bxI0PGx1QijSQhCLKEhCEESNMTt121IpxM1uRSoDqlLoWofQnJjM8SoWcvH8oJ+y++Ku4PJxLuDu9PHr0Xo4DtUzs+HZgLfW9+F+XVWfP6qWrL55C5ucPlymcD/7xHAn9Yx1EhQ/mU8//ALAf7xD/AInL/SCfsvvh8Tl/pBP2X3x0Z2TlbvGT7j8pP+pckvdmDejT9wVxrlrExXq3MVWababdf27ktg7RhISMZJ8hFm8Hn4/qH+xmv4C4quryZp9QdlC5zOXj2sYzkA9vpi1ODz8f1D/YzX8BcZcdEYYJIyKoEf8AFhbiDiXCYm82t+d62rb4tNKL9vvUSnVa1qGJ+TZpLcu454tlrDgeeURhawey09cY6xn++9JNQLHoqazc9CEjIreSwHfFsuZWoEgYQsnsk9ceUaF4r9W76sHUKn0i2Kq1KSb1JbmVoXKtOkuF11JOVJJ7IT09Iz9f+r9+33Q0UW5aszNySH0vhCZRps70ggHKUg9lGPP4f8Vymd3J73SvJks+a1NUfyJk/wBWGv3UxG9IbBsLUbh4MzK2zTG7iTJPyK5pDeHEzSEkIWT7yC2o/wBIxJKj+RMn+rDX7qYrLgQuvwd01iz5h3DVRYE3LAnpzW+igPUoOf7uMDWv+Hlew0WutX0zAHyUD4VbJkry1aak61Iom6bISrszNsOp9leBsSlX9pYOP1Y6XFRSLbldVpCzbIoElIuMMttPIlUYLsy8QUpPzJKMf0jGjdIrIltPrn1LuSdQJeTfqBdYWoYCJVLfPUR+qC6U/wB36RQXDpJTOpfElM3dUWypmVeeqzoV1CVFWGUZ/VKkkeiI1txXMmfPf9LW/MquWgG+JV0a4V06OaF2/RaI6ETrT8pKsKScFXKIddX8yijB/aRx+Mejy13aOUa+6WnmpkVNzCVgZJlphKR+9yj9cd/XGvaCVS4W6HqVU1LqNIBCWEpnAGealKjksjaSQE+ZIiSWa5p3fulFRtGyah4uhNSq6aQpLwUxuQSn8MAo4yCD17ekebG8wtjmymwbJrQg+q6EXYtZ74CfxkV3/wAOf4zcSG69I5zUvinuV+cS6xbkiuUM9MDoXT4VkhlB/OPmf5o69yM8jgfkZml6uXRTZ1stzMpTnGHkH+atEwhKh9YMaTk73tmqahVvTpt11isSksh58fg+cHEAnlqByVJSUZPQjIx2ONONnkixT3R/x38hpqqsaCwArK3Eo/p8zXmNPdObTpIqfiEMzk6w3lQdKgEsNnPfONx+j3xZMxYOj+h1iSdTvqkouGqzCg2ouMB9TzuMqS02shCUJ9569snJAil61ZL+lHEXb8rVlrdpKazKzcrOOdnWOek7ifzk9leoz2IjUHEpeMtZFCpdXn7BkbsklPracXNKSBKKIBSfabX8rBGenyR3zHSdzgIooySHa70T7n6KB4kqCK070l1u0/m61p/SkUCrS5U2gIaDGx4DIQ62klBSrI9pP19CIqThj0eZ1Auaov3Il9qj0dYbmWUKKFvvEnDWR1AG0lRHXsBjORb2mer9zVqmTM7YWgrHguaEPOSVSal0KWB2P/BTuIB9cZjqcGlXZqVNvhK2ESs8u4nZt6XS4F8pLoG1O4dwChYz54irpsRh4ZBe1VqCRfRTTXELjTNz8NcpeRsJyypLKJjwa6h8HoLKXc7SC7u5nQ9N2MeecdYqzil0dk9PaxT6nbQeNGqrimkS61Fapd4ddgUepSodRnJ6HJ7RNbi1ppFLvWctqY0FortVanVS+ze3zHl7sJIHh8nd0I75yIcQt9XhUaXbLV56cLteRl68xNJmXKm3MczYFbkBKUg9lE59PWOkAmilYRdHe3A36gWodlIKnFuaU6WaUaaprl/06QqE2hpCp6ZnWeeOar/pNNnI6E4GBk4yTjt09A2NKa1dVSvHTRKpBzwng6hTeUWwkqWlaHAgnCc7FD2eh9CDnyca1Gqda0fl5mlMuTLchUW5uZS0Co8rluJ34HcArSfQZPlFdcBFGqqa7cFeUw6ilmURKpcUCEuO7wrCfftAOfduHvjJlMuEfO95zeV6dKVtnhoCrXi5/KFuf/Cf6RmKpi1uLn8oW5/8J/pGYqmPosH/AI8fQfRZ394pCEI0KqQhCCJEqF4qx/J4+2+6IrCNWGxk2GvlOq+n3WTFYGDF1zm3W2p+ylfxyV+jh9t90Pjkr9HD7b7oikI0/vON/n8h+Fk/YsB/r+Z/K9VXnPhCoOzfL5fMx7Oc4wAO/wBESTR+9Tp7f0jdSaaKkZVDqfDl7lbt7akfK2qxjdntERhHmTf383M1zXfuvUiYImhrNANvZWBrvqUrVK7ZSvqowpJl5BEnyRM87dtccXu3bU4/CYxjyiv4QikcbY2hjRoFckk2Vd8xxALe0UGm3xUSlIpiZDx3j+vsgDfy+X6dt30x4uGywdQJ+9bdvS3qYn4KlaiA/OrmG0oShJw6kp3bzlCiOg65inYnFlat6hWZRDRbauJUhIFxTvK8Iw5hSu5BWgkdvfGWTDFkbmwAAu3u/FWDrNuWtuMa8mbb0nmKMzMJTUa6oSrSAfa5OQXVY9232f7YjNugeszGlNPqjLdppq01UXUKXMGe5O1CAQlGOWrzUo5z59ukVvdNx126Ksuq3DVZqpTqgE819e4hI7JA7JHoMCOXHPDcOZHByZNb1Kl0hLrC696V6aum7arcU6na/UZpyYUjdkICjkJB8wBgD5om+ger03pTO1VxukCrS1RbbStgzXJ2rQTtXnaryUoYx5+kVjCNj4Y5I+W4aKgcQbV02rrqzb2rtw3/AClnJIrcuG1yPwhgNrygqWF8vruKCcbR1UesRK8dTapWNYXdSqTLmjT5dZdaaS9zQgttIbwVYTuCgk5GB0UREDhFG4SFrswGtV7KS8lXdrNrxIanWkmjVKxG5ScYWHZWebqW5TC+ysJLQylQ6FOfce4EdjTrigq9Gt5qg3dQGrjl2mw0mYL3LdUgDADgKVJX7s9D78nrGeYRzOAw5Zy8unup5jrtaI1A4oKpU7ddoNm26xbbDrZaVMB4LcQk9w2EpSlB9evpg9YqPSzUC4NOblFboLyCVp5czLvAlqYbznaoDr36gjqPrBicIvHg4Y2FjW6HdQXuJtapTxZUpYRPTGnCFVVtG1LonU9PmWW9wHpFHaw6nXFqbXWqhWi0xLSySiUk2M8tkHuevUqOBlR9w7DpEHhFYcDBC7Mxuqlz3OFFaJ0o4oKpa9sy1BuOhmtok2w1LzTczyneWBhKVgpIVgdM9DgDOT1j3J4taui51TotNj4HTLKaZkEzuxW8qSeYtzYckBJASEgDce8ZohFDw3DOcXFm/VOY7zUq1bvE39qDU7tVTxTjP8r/AJYPc3ZsaQ38ranOdmew7xFYQjYxgY0NbsFQm9UhCEWRIQhBEhCEESEIQRIQhBEhCEESEIQRIQhBEhCEESEIQRIQhBEhCEESEIQRIQhBEhCEESEIQRf/2Q==" alt="FlyAkeed" style="height:44px;width:auto;display:block;"/></div>
+    <div class="hdr-copy">
+      <h1>Discover the <em>true cost</em> of manual travel</h1>
+      <p>Tell us about your business travel and see how much time, money, and productivity you could reclaim by switching to FlyAkeed — Saudi Arabia's leading corporate travel platform.</p>
+      <div class="hdr-badges">
+        <span class="hbadge pink">Saudi Arabia & GCC</span>
+        <span class="hbadge">Backed by industry research</span>
+        <span class="hbadge green">Direct + Indirect savings</span>
+        <span class="hbadge">SAR pricing</span>
+      </div>
+    </div>
+  </div>
+  <div class="proof">
+    <div class="proof-inner">
+      <div class="proof-item"><div class="proof-num">221<em>+</em></div><div class="proof-lbl">Enterprise Clients</div></div>
+      <div class="proof-item"><div class="proof-num">1.4<em>M+</em></div><div class="proof-lbl">Travel Requests</div></div>
+      <div class="proof-item"><div class="proof-num">98<em>%</em></div><div class="proof-lbl">CSAT Score</div></div>
+      <div class="proof-item"><div class="proof-num">92<em>%</em></div><div class="proof-lbl">Policy Compliance</div></div>
+      <div class="proof-item"><div class="proof-num">57<em>M+</em></div><div class="proof-lbl">SAR Saved</div></div>
+      <div class="proof-item"><div class="proof-num">59<em>s</em></div><div class="proof-lbl">Support Response</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="tabs">
+    <button class="tab active" onclick="setV('inputs',this)">Tell us about your company</button>
+    <button class="tab" onclick="setV('results',this)">See your results</button>
+  </div>
+
+  <div id="vi">
+    <div class="card">
+      <div class="slbl">Company details <span class="source-tag st-you">Your input</span></div>
+      <div class="igrid">
+        <div class="igrp"><label>Number of travelers</label><input type="number" id="travelers" value="200" min="1" oninput="calc()"/><div class="hint">employees who travel for work</div></div>
+        <div class="igrp"><label>Monthly business trips</label><input type="number" id="trips" value="100" min="1" oninput="calc()"/><div class="hint">total trips per month</div></div>
+        <div class="igrp"><label>Annual travel spend</label><input type="number" id="spend" value="4200000" min="10000" oninput="calc()"/><div class="hint">SAR total (flights + hotels + ground)</div></div>
+        <div class="igrp"><label>Avg. employee hourly rate</label><input type="number" id="rate" value="120" min="20" oninput="calc()"/><div class="hint">SAR per hour (blended, loaded)</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="slbl">Current process benchmarks</div>
+      <div class="igrid">
+        <div class="sgrp"><label>Avg. approval turnaround today</label><div class="sval-row"><span class="sval" id="apprV">1.5 days</span><span class="sbench">→ Instant for 80%</span></div><input type="range" id="appr" min="2" max="72" step="2" value="36" oninput="syHrs('appr','apprV');calc()"/><div class="sbounds"><span>2 hrs</span><span>3 days</span></div></div>
+        <div class="sgrp"><label>People touching each trip</label><div class="sval-row"><span class="sval" id="ppplV">4 people</span><span class="sbench">→ 1 for 80% of trips</span></div><input type="range" id="pppl" min="2" max="5" step="1" value="4" oninput="sy('pppl','ppplV',' people');calc()"/><div class="sbounds"><span>2</span><span>5</span></div></div>
+        <div class="sgrp"><label>Policy non-compliance rate <span class="source-tag st-ind">Industry avg 58%</span></label><div class="sval-row"><span class="sval" id="ncompV">30%</span><span class="sbench">→ FlyAkeed: 8%</span></div><input type="range" id="ncomp" min="10" max="60" step="1" value="30" oninput="sy('ncomp','ncompV','%');calc()"/><div class="sbounds"><span>10%</span><span>60%</span></div></div>
+        <div class="sgrp"><label>Finance reconciliation hrs/month</label><div class="sval-row"><span class="sval" id="reconV">30h</span><span class="sbench">→ ERP auto-fill cuts 75%</span></div><input type="range" id="recon" min="5" max="80" step="5" value="30" oninput="sy('recon','reconV','h');calc()"/><div class="sbounds"><span>5h</span><span>80h</span></div></div>
+      </div>
+      <div style="font-size:11px;font-weight:600;color:var(--text2);margin-top:14px;margin-bottom:8px;">Include productivity value in ROI?</div>
+      <div class="radio-group">
+        <div class="radio-opt selected" id="opt-prod-on" onclick="selectProdMode('on')">
+          <div class="radio-dot"></div>
+          <div class="radio-body">
+            <div class="radio-title">Yes — full ROI</div>
+            <div class="radio-sub">Includes time savings × hourly rate</div>
+          </div>
+        </div>
+        <div class="radio-opt" id="opt-prod-off" onclick="selectProdMode('off')">
+          <div class="radio-dot"></div>
+          <div class="radio-body">
+            <div class="radio-title">No — hard cash only</div>
+            <div class="radio-sub">CFO-conservative view</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="font-size:11px;font-weight:600;color:var(--text2);margin-top:14px;margin-bottom:8px;">Who handles travel administration today?</div>
+      <div class="radio-group" style="grid-template-columns:repeat(3,1fr);">
+        <div class="radio-opt" id="opt-admin-none" onclick="selectAdminMode('none')">
+          <div class="radio-dot"></div>
+          <div class="radio-body">
+            <div class="radio-title">No one</div>
+            <div class="radio-sub">Employees self-serve</div>
+          </div>
+        </div>
+        <div class="radio-opt selected" id="opt-admin-part" onclick="selectAdminMode('part')">
+          <div class="radio-dot"></div>
+          <div class="radio-body">
+            <div class="radio-title">Part-time</div>
+            <div class="radio-sub">Travel = part of their job</div>
+          </div>
+        </div>
+        <div class="radio-opt" id="opt-admin-full" onclick="selectAdminMode('full')">
+          <div class="radio-dot"></div>
+          <div class="radio-body">
+            <div class="radio-title">Dedicated</div>
+            <div class="radio-sub">Full-time coordinator</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="admin-part-row" style="margin-top:10px;">
+        <div class="sgrp" style="margin-bottom:8px;">
+          <label>% of their time spent on travel admin</label>
+          <div class="sval-row"><span class="sval" id="adminPctV">25%</span><span class="sbench">→ 60% of that time reclaimed</span></div>
+          <input type="range" id="adminPct" min="5" max="50" step="5" value="25" oninput="sy('adminPct','adminPctV','%');calc()"/>
+          <div class="sbounds"><span>5%</span><span>50%</span></div>
+        </div>
+        <div class="sgrp">
+          <label>Their monthly cost (fully loaded)</label>
+          <div class="sval-row"><span class="sval" id="adminPartCostV">SAR 14,000</span><span class="sbench">e.g. office mgr / HR coordinator</span></div>
+          <input type="range" id="adminPartCost" min="7000" max="25000" step="1000" value="14000" oninput="syCurrency('adminPartCost','adminPartCostV');calc()"/>
+          <div class="sbounds"><span>SAR 7k</span><span>SAR 25k</span></div>
+        </div>
+      </div>
+
+      <div id="admin-full-row" style="margin-top:10px;display:none;">
+        <div class="sgrp">
+          <label>Travel coordinator monthly cost (fully loaded)</label>
+          <div class="sval-row"><span class="sval" id="adminCostV">SAR 11,000</span><span class="sbench">→ 80% of their time reclaimed</span></div>
+          <input type="range" id="adminCost" min="7000" max="15000" step="500" value="11000" oninput="syCurrency('adminCost','adminCostV');calc()"/>
+          <div class="sbounds"><span>SAR 7k</span><span>SAR 15k</span></div>
+        </div>
+      </div>
+
+      <!-- Hidden compatibility input -->
+      <input type="checkbox" id="hasAdmin" checked style="display:none;"/>
+    </div>
+
+    <div class="card">
+      <div class="slbl">Service fees & payment model</div>
+      <p style="font-size:11px;color:var(--text2);margin-bottom:14px;line-height:1.5;">FlyAkeed offers flexible commercial options. Pick what works for your business — final terms are tailored to your volume and confirmed during consultation.</p>
+
+      <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:6px;">Transaction service fee</div>
+      <div class="radio-group">
+        <div class="radio-opt selected" id="opt-pct" onclick="selectTxModel('pct')">
+          <div class="radio-dot"></div>
+          <div class="radio-body">
+            <div class="radio-title">% of transaction</div>
+            <div class="radio-sub">Scales with booking value</div>
+          </div>
+        </div>
+        <div class="radio-opt" id="opt-flat" onclick="selectTxModel('flat')">
+          <div class="radio-dot"></div>
+          <div class="radio-body">
+            <div class="radio-title">Flat fee per booking</div>
+            <div class="radio-sub">Predictable per-trip cost</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tx-input-row" id="tx-pct-row">
+        <label>Service fee % per transaction</label>
+        <div class="tx-slider-row">
+          <input type="range" id="txPct" min="0" max="3" step="0.25" value="2" oninput="syTx()"/>
+          <span class="tx-slider-val" id="txPctV">2%</span>
+        </div>
+      </div>
+
+      <div class="tx-input-row" id="tx-flat-row" style="display:none;">
+        <label>Flat fee per transaction (SAR)</label>
+        <input type="number" id="txFlat" value="30" min="15" max="50" class="tx-num-input" oninput="calc()"/>
+      </div>
+
+      <div style="font-size:11px;font-weight:600;color:var(--text2);margin:14px 0 6px;">Payment model</div>
+      <div class="radio-group">
+        <div class="radio-opt selected" id="opt-wallet" onclick="selectPaymentModel('wallet')">
+          <div class="radio-dot"></div>
+          <div class="radio-body">
+            <div class="radio-title">Wallet (pre-paid)</div>
+            <div class="radio-sub">Base service fee</div>
+          </div>
+        </div>
+        <div class="radio-opt" id="opt-postpaid" onclick="selectPaymentModel('postpaid')">
+          <div class="radio-dot"></div>
+          <div class="radio-body">
+            <div class="radio-title">Post-paid <span style="color:var(--pink);font-weight:700;">+5%</span></div>
+            <div class="radio-sub">Pay on monthly invoice</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="payment-note"><strong>ℹ️</strong> Post-paid adds 5% on service fees to cover credit terms. Wallet (pre-paid) keeps your costs lower — most clients prefer this model.</div>
+    </div>
+
+    <button class="navbtn" onclick="setV('results',document.querySelectorAll('.tab')[1])">Calculate my ROI →</button>
+  </div>
+
+  <div id="vr" style="display:none;">
+
+    <div class="card">
+      <div class="slbl">Recommended plan</div>
+      <div class="pgrid" id="pgrid"></div>
+      <div id="paddons" style="font-size:10px;color:var(--text3);margin-top:10px;"></div>
+      <div id="pricingCompare" style="display:none;"></div>
+    </div>
+
+    <div class="mrow">
+      <div class="mc"><div class="ml">Gross savings / yr</div><div class="mv g" id="r-gross">—</div></div>
+      <div class="mc"><div class="ml">Total annual investment</div><div class="mv r" id="r-cost">—</div></div>
+      <div class="mc"><div class="ml">Net savings / yr</div><div class="mv g" id="r-net">—</div></div>
+      <div class="mc"><div class="ml">ROI</div><div class="mv g" id="r-roi">—</div></div>
+      <div class="mc"><div class="ml">Payback</div><div class="mv b" id="r-pay">—</div></div>
+    </div>
+
+    <!-- Cost breakdown -->
+    <div class="cost-breakdown">
+      <div class="slbl" style="margin-bottom:10px;">Your annual investment breakdown</div>
+      <div class="cost-row"><span class="cl">Annual platform subscription</span><span class="cv" id="cb-sub">—</span></div>
+      <div class="cost-row"><span class="cl">Service fees (<span id="cb-txmethod">—</span>)</span><span class="cv" id="cb-tx">—</span></div>
+      <div class="cost-row" id="cb-uplift-row" style="display:none;"><span class="cl">Post-paid adjustment (+5%)</span><span class="cv uplift" id="cb-uplift">—</span></div>
+      <div class="cost-total"><span class="ctl">Total annual investment</span><span class="ctv" id="cb-total">—</span></div>
+      <div style="margin-top:10px;font-size:10px;color:var(--text3);line-height:1.5;">Indicative pricing based on your inputs. Final commercial terms tailored to your business — request a quote for confirmed pricing.</div>
+    </div>
+    <!-- Hidden placeholder kept for compatibility -->
+    <div style="display:none;">
+      <span id="cb-method"></span><span id="cust-invest"></span><div id="cb-walletSave"></div>
+    </div>
+
+    <div class="bstack">
+      <div class="bstack-hd">
+        <div class="bstack-title">Travel spend optimization — how we get to ~20%</div>
+        <div class="bstack-sub">Stacked components, each sourced independently</div>
+      </div>
+      <div class="stack-row">
+        <div class="stack-dot" style="background:var(--teal)"></div>
+        <div class="stack-label"><div class="main">Policy compliance recovery <span class="source-tag st-ind">Deloitte</span></div><div class="source">Moving from your compliance rate toward FlyAkeed's 92%. Industry: 5–10% of spend leaked to non-compliant bookings.</div></div>
+        <div class="stack-val g" id="s-policy">—</div>
+      </div>
+      <div class="stack-row">
+        <div class="stack-dot" style="background:var(--teal2)"></div>
+        <div class="stack-label"><div class="main">Market-rate access & fee elimination <span class="source-tag st-fa">FlyAkeed</span></div><div class="source">Direct access to IATA fares with no agency markup. Typical savings: 5–8% vs. traditional TMC.</div></div>
+        <div class="stack-val g" id="s-market">—</div>
+      </div>
+      <div class="stack-row">
+        <div class="stack-dot" style="background:var(--pink)"></div>
+        <div class="stack-label"><div class="main">Missed-fare prevention <span class="source-tag st-ind">Industry</span></div><div class="source">1–2 day approval delays push bookings closer to trip date = ~15% price hike. FlyAkeed's instant auto-approval eliminates 80% of this.</div></div>
+        <div class="stack-val g" id="s-missed">—</div>
+      </div>
+      <div class="stack-row">
+        <div class="stack-dot" style="background:var(--blue)"></div>
+        <div class="stack-label"><div class="main">Advance booking behavior <span class="source-tag st-ind">Arthur D. Little</span></div><div class="source">Automated policy rules nudge travelers toward earlier booking windows. Industry: 2–5% spend reduction.</div></div>
+        <div class="stack-val g" id="s-advance">—</div>
+      </div>
+      <div class="stack-total"><div class="lbl">Total travel spend savings</div><div class="val" id="s-total">—</div></div>
+    </div>
+
+    <div class="bstack">
+      <div class="bstack-hd">
+        <div class="bstack-title">Operational efficiency — time & admin reclaimed</div>
+        <div class="bstack-sub">Hours freed across your organization</div>
+      </div>
+      <div class="stack-row">
+        <div class="stack-dot" style="background:var(--navy)"></div>
+        <div class="stack-label"><div class="main">Approval cycle compression <span class="source-tag st-fa">FlyAkeed</span></div><div class="source">80% of trips auto-approved instantly. Replaces 1–2 day approval loops with mobile one-click.</div></div>
+        <div class="stack-val g" id="o-approval">—</div>
+      </div>
+      <div class="stack-row">
+        <div class="stack-dot" style="background:var(--navy2)"></div>
+        <div class="stack-label"><div class="main">Touchpoint reduction <span class="source-tag st-fa">FlyAkeed</span></div><div class="source">Legacy: 3–4 people per trip. FlyAkeed: 1 person for 80% of trips. Removes manager + coordinator handoffs.</div></div>
+        <div class="stack-val g" id="o-touch">—</div>
+      </div>
+      <div class="stack-row">
+        <div class="stack-dot" style="background:var(--navy3)"></div>
+        <div class="stack-label"><div class="main">Finance reconciliation <span class="source-tag st-ind">SAP Concur</span></div><div class="source">ERP auto-fill + approval trails cut reconciliation time by ~75%.</div></div>
+        <div class="stack-val g" id="o-finance">—</div>
+      </div>
+      <div class="stack-row" id="adminRow">
+        <div class="stack-dot" style="background:var(--blue2)"></div>
+        <div class="stack-label"><div class="main">Travel admin time reclaimed <span class="source-tag st-fa">FlyAkeed</span></div><div class="source">Self-service booking eliminates ~80% of admin coordination workload — reassignable to higher-value work.</div></div>
+        <div class="stack-val g" id="o-admin">—</div>
+      </div>
+      <div class="stack-total"><div class="lbl">Total operational efficiency value</div><div class="val" id="o-total">—</div></div>
+    </div>
+
+    <div class="card">
+      <div class="slbl">Strategic value — beyond the numbers</div>
+      <div class="svgrid">
+        <div class="svitem"><div class="sviicon" style="background:var(--teal-light);"><svg viewBox="0 0 24 24" fill="var(--teal)"><path d="M12 2L4 6v6c0 5 3.5 9.5 8 11 4.5-1.5 8-6 8-11V6l-8-4z"/></svg></div><div class="svititle">Saudi-hosted sovereignty</div><div class="svidesc">100% Saudi-hosted. ZATCA/VAT compliance built-in. National security protocols.</div></div>
+        <div class="svitem"><div class="sviicon" style="background:#FFF4F9;"><svg viewBox="0 0 24 24" fill="var(--pink)"><path d="M12 1l3 6 6 1-4 5 1 6-6-3-6 3 1-6-4-5 6-1z"/></svg></div><div class="svititle">98% CSAT, NPS 95</div><div class="svidesc">Higher adoption than legacy OBTs (industry avg: 42% compliance — Deloitte).</div></div>
+        <div class="svitem"><div class="sviicon" style="background:var(--blue-light);"><svg viewBox="0 0 24 24" fill="var(--blue)"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 5h-2v6l5 3 1-1.5-4-2.5V7z"/></svg></div><div class="svititle">24/7 AkeedCare</div><div class="svidesc">59s response, 12min resolution. Legacy TMC avg: 30 min call response (CTM data).</div></div>
+        <div class="svitem"><div class="sviicon" style="background:var(--teal-light);"><svg viewBox="0 0 24 24" fill="var(--teal)"><path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/></svg></div><div class="svititle">Real-time visibility</div><div class="svidesc">Live dashboards by dept, destination, policy. Compare: 62.9% of companies have zero enforcement data today.</div></div>
+        <div class="svitem"><div class="sviicon" style="background:#FFF4F9;"><svg viewBox="0 0 24 24" fill="var(--pink)"><path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm-8 3a3 3 0 110 6 3 3 0 010-6zm6 11H6v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1v1z"/></svg></div><div class="svititle">Post-ticketing self-service</div><div class="svidesc">Change, cancel, rebook in seconds. Eliminated 185K+ support emails annually for clients.</div></div>
+        <div class="svitem"><div class="sviicon" style="background:var(--blue-light);"><svg viewBox="0 0 24 24" fill="var(--blue)"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.4-1.4 3.6 3.6 7.6-7.6L19 8l-9 9z"/></svg></div><div class="svititle">GBTA: 17-30% revenue lift</div><div class="svidesc">Companies with disciplined travel management outperform peers by 17–30% in revenue (GBTA/ASTA).</div></div>
+      </div>
+    </div>
+
+    <div class="proof2">
+      <div class="slbl" style="color:rgba(255,255,255,.4);margin-bottom:14px;">What FlyAkeed clients collectively achieved</div>
+      <div class="proof2-grid">
+        <div class="p2item"><div class="p2num">92<em>%</em></div><div class="p2lbl">Policy compliance</div></div>
+        <div class="p2item"><div class="p2num">SAR 57<em>M</em></div><div class="p2lbl">Cost savings</div></div>
+        <div class="p2item"><div class="p2num">1.75<em>M</em></div><div class="p2lbl">Emails eliminated</div></div>
+        <div class="p2item"><div class="p2num">NPS 95</div><div class="p2lbl">12-mo NPS</div></div>
+      </div>
+    </div>
+
+    <div class="cta">
+      <p>Every figure above is traceable to either FlyAkeed client data or published industry research. Each number can be defended in a CFO meeting. Ready for a custom proposal?</p>
+      <div class="ctarow">
+        <a href="https://business.flyakeed.com" target="_blank" class="ctabtn primary">Request a demo →</a>
+        <button class="ctabtn" onclick="window.print()">Save as PDF</button>
+      </div>
+    </div>
+
+    <div class="disc">
+      <strong>Sources & methodology:</strong>
+      <ul class="disc-list">
+        <li><strong>FlyAkeed benchmarks:</strong> 80% auto-approval, 92% compliance, 59s support response, SAR 57M collective client savings — from 2026 client data (221+ enterprise clients, 1.4M+ requests).</li>
+        <li><strong>Deloitte Corporate Travel Survey 2024:</strong> 42% industry avg booking compliance (58% non-compliance); ~30% of travelers never use managed channels.</li>
+        <li><strong>Arthur D. Little:</strong> 15–20% overall efficiency gain in travel operations where automation is implemented at scale.</li>
+        <li><strong>GBTA/ASTA ROI Study:</strong> 65% of global travel spend is unmanaged; companies with enforced policies achieve 17–30% higher revenues.</li>
+        <li><strong>SAP Concur Performance Benchmark:</strong> automated expense processing reduces finance time by 50–75%.</li>
+        <li><strong>Missed-fare hike:</strong> Industry consensus of 10–30% last-minute premium; calculator uses conservative 15%.</li>
+        <li><strong>Investment estimate:</strong> Indicative annual investment based on your profile. Actual commercial terms tailored to your travel volume, payment preferences, and required services. Contact us for a custom proposal.</li>
+        <li><strong>Actual results vary by company.</strong> This is a directional estimate — request a custom analysis.</li>
+      </ul>
+    </div>
+
+    <button class="navbtn ghost" onclick="setV('inputs',document.querySelectorAll('.tab')[0])">← Adjust inputs</button>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-logo"><img src="data:image/jpeg;base64,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" alt="FlyAkeed" style="height:28px;width:auto;"/></div>
+  <p>FlyAkeed.com &nbsp;|&nbsp; info@FlyAkeed.com &nbsp;|&nbsp; 920000091 &nbsp;|&nbsp; Riyadh, Saudi Arabia</p>
+</div>
+
+<script>
+const PLANS=[
+  {name:'Starter',price:7000,travelers:20,extraT:300,color:'#8A90B5'},
+  {name:'Growth',price:18000,travelers:80,extraT:240,color:'#006FFF'},
+  {name:'Professional',price:60000,travelers:300,extraT:200,color:'#1D9E75'},
+  {name:'Professional+',price:180000,travelers:800,extraT:150,color:'#FF5FA5'},
+  {name:'Enterprise',price:null,travelers:Infinity,extraT:null,color:'#192071'},
+];
+
+// Dual pricing state
+let pricingMethod='headcount'; // 'headcount' or 'volume'
+let volumeRate=4; // 4-6%
+
+// Commercial state
+let txModel='pct'; // 'pct' or 'flat'
+let paymentModel='wallet'; // 'wallet' or 'postpaid'
+let adminMode='part'; // 'none' | 'part' | 'full'
+let prodMode='on'; // 'on' | 'off'
+
+function selectAdminMode(m){
+  adminMode=m;
+  ['none','part','full'].forEach(x=>document.getElementById('opt-admin-'+x).classList.toggle('selected',m===x));
+  document.getElementById('admin-part-row').style.display = m==='part' ? '' : 'none';
+  document.getElementById('admin-full-row').style.display = m==='full' ? '' : 'none';
+  document.getElementById('hasAdmin').checked = (m!=='none');
+  calc();
+}
+function selectProdMode(m){
+  prodMode=m;
+  document.getElementById('opt-prod-on').classList.toggle('selected',m==='on');
+  document.getElementById('opt-prod-off').classList.toggle('selected',m==='off');
+  calc();
+}
+
+function selectTxModel(m){
+  txModel=m;
+  document.getElementById('opt-pct').classList.toggle('selected',m==='pct');
+  document.getElementById('opt-flat').classList.toggle('selected',m==='flat');
+  document.getElementById('tx-pct-row').style.display=m==='pct'?'':'none';
+  document.getElementById('tx-flat-row').style.display=m==='flat'?'':'none';
+  calc();
+}
+function selectPaymentModel(m){
+  paymentModel=m;
+  document.getElementById('opt-wallet').classList.toggle('selected',m==='wallet');
+  document.getElementById('opt-postpaid').classList.toggle('selected',m==='postpaid');
+  calc();
+}
+function syTx(){
+  const v=parseFloat(document.getElementById('txPct').value);
+  document.getElementById('txPctV').textContent=v+'%';
+  calc();
+}
+
+function selectPricing(method){
+  pricingMethod=method;
+  calc();
+}
+function setVolumeRate(r){
+  volumeRate=parseFloat(r);
+  document.getElementById('volRateVal').textContent=volumeRate+'%';
+  calc();
+}
+
+function sy(id,outId,suf){const v=parseFloat(document.getElementById(id).value);document.getElementById(outId).textContent=v+(suf||'h');}
+function syHrs(id,outId){const h=parseFloat(document.getElementById(id).value);document.getElementById(outId).textContent=h<24?h+' hrs':(h/24).toFixed(h%24===0?0:1)+' days';}
+function syCurrency(id,outId){const v=parseFloat(document.getElementById(id).value);document.getElementById(outId).textContent='SAR '+v.toLocaleString();}
+function setV(v,btn){document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('vi').style.display=v==='inputs'?'':'none';document.getElementById('vr').style.display=v==='results'?'':'none';if(v==='results')calc();window.scrollTo({top:0,behavior:'smooth'});}
+function getPlan(t){for(let i=0;i<PLANS.length;i++){const p=PLANS[i];if(t<=p.travelers)return{plan:p,idx:i,extras:0,total:p.price};if(p.extraT&&i<PLANS.length-2){const next=PLANS[i+1];const extras=t-p.travelers;const w=p.price+extras*p.extraT;if(w<next.price)return{plan:p,idx:i,extras,total:w};}}return{plan:PLANS[PLANS.length-1],idx:PLANS.length-1,extras:0,total:null};}
+function fmtK(n){if(n==null)return'Custom';const a=Math.abs(n),s=n<0?'−':'';if(a>=1000000)return s+'SAR '+(a/1000000).toFixed(1)+'M';if(a>=1000)return s+'SAR '+Math.round(a/1000).toLocaleString()+'K';return s+'SAR '+Math.round(a).toLocaleString();}
+
+function calc(){
+  const travelers=parseInt(document.getElementById('travelers').value)||200;
+  const tripsM=parseInt(document.getElementById('trips').value)||100;
+  const spend=parseFloat(document.getElementById('spend').value)||4200000;
+  const hrRate=parseFloat(document.getElementById('rate').value)||120;
+  const apprHrs=parseFloat(document.getElementById('appr').value)||36;
+  const pppl=parseInt(document.getElementById('pppl').value)||4;
+  const ncomp=parseFloat(document.getElementById('ncomp').value)/100||0.30;
+  const reconH=parseFloat(document.getElementById('recon').value)||30;
+  const adminCost=parseFloat(document.getElementById('adminCost').value)||11000;
+  const adminPct=parseFloat(document.getElementById('adminPct').value)/100||0.25;
+  const adminPartCost=parseFloat(document.getElementById('adminPartCost').value)||14000;
+  const tripsY=tripsM*12;
+
+  // Admin row visibility in results
+  document.getElementById('adminRow').style.display = (adminMode!=='none') ? '' : 'none';
+
+  // Spend optimization (stacked to ~20%)
+  const complianceDelta=Math.max(0,ncomp-0.08);
+  const policyRecovery=spend*complianceDelta*0.60;
+  const marketAccess=spend*0.06;
+  const delayImpact=Math.min(apprHrs/24,3)/3;
+  const missedFarePrevention=spend*0.15*delayImpact*0.80;
+  const advanceBooking=spend*0.03;
+  const totalSpendSavings=policyRecovery+marketAccess+missedFarePrevention+advanceBooking;
+
+  // Operational efficiency
+  const apprTimePerTrip=0.25+(apprHrs/72*0.5);
+  const approvalSavings=0.80*apprTimePerTrip*tripsY*hrRate;
+  const handoffsEliminated=(pppl-1)*0.80*tripsY;
+  const touchSavings=handoffsEliminated*(10/60)*hrRate;
+  const financeSavings=reconH*12*0.75*hrRate;
+  let adminSavings=0;
+  if(adminMode==='full') adminSavings = adminCost*12*0.80;
+  else if(adminMode==='part') adminSavings = adminPartCost*adminPct*12*0.60;
+  // No admin = 0
+  const productivitySavings = approvalSavings+touchSavings+financeSavings;
+  const totalOpSavings = (prodMode==='on' ? productivitySavings : 0) + adminSavings;
+
+  const gross=totalSpendSavings+totalOpSavings;
+  const{plan,idx,extras,total:headcountPrice}=getPlan(travelers);
+
+  // === DUAL PRICING ENGINE ===
+  const FLOOR=7000;
+  const rawVolumePrice=spend*(volumeRate/100);
+  const volumePrice=Math.max(rawVolumePrice,FLOOR);
+
+  // Determine if volume-based pricing is materially different (>20%)
+  let materialDiff=false, scenario='aligned', recommendedMethod='headcount';
+  if(headcountPrice!==null){
+    const diff=Math.abs(volumePrice-headcountPrice)/headcountPrice;
+    if(diff>0.20){
+      materialDiff=true;
+      // High-intensity travelers (volume > headcount): light headcount, heavy travel
+      // Light travelers (volume < headcount): many employees, low travel
+      if(volumePrice>headcountPrice) scenario='high-intensity';
+      else scenario='light-volume';
+    }
+  }
+
+  // If sales rep hasn't switched, default to headcount unless materially different
+  // When materially different, the rep needs to make the call (Option D)
+  const subscriptionCost = pricingMethod==='volume' ? volumePrice : headcountPrice;
+
+  // === TRANSACTION FEE ENGINE ===
+  const avgTripValue = spend / tripsY;
+  let txFeePerTrip = 0;
+  let txDescriptor = '';
+  if(txModel==='pct'){
+    const pct = parseFloat(document.getElementById('txPct').value) || 2;
+    txFeePerTrip = avgTripValue * (pct/100);
+    txDescriptor = pct+'% of each trip';
+  } else {
+    txFeePerTrip = parseFloat(document.getElementById('txFlat').value) || 30;
+    txDescriptor = 'SAR '+txFeePerTrip+' per trip';
+  }
+  const txFeesBase = txFeePerTrip * tripsY;
+  const postpaidUplift = paymentModel==='postpaid' ? txFeesBase * 0.05 : 0;
+  const txFeesTotal = txFeesBase + postpaidUplift;
+
+  // Total FlyAkeed commercial cost
+  const total = subscriptionCost==null ? null : (subscriptionCost + txFeesTotal);
+
+  const net=total?gross-total:null;
+  const roi=total?((gross-total)/total*100):null;
+  const payM=total?(total/gross*12):null;
+
+  document.getElementById('r-gross').textContent=fmtK(gross);
+  document.getElementById('r-cost').textContent=total?fmtK(total):'Custom';
+  document.getElementById('r-net').textContent=net!=null?fmtK(net):'—';
+  document.getElementById('r-roi').textContent=roi!=null?Math.round(roi)+'%':'—';
+  document.getElementById('r-pay').textContent=payM?(payM<1?'< 1 mo':Math.round(payM)+' mo'):'—';
+  document.getElementById('s-policy').textContent=fmtK(policyRecovery);
+  document.getElementById('s-market').textContent=fmtK(marketAccess);
+  document.getElementById('s-missed').textContent=fmtK(missedFarePrevention);
+  document.getElementById('s-advance').textContent=fmtK(advanceBooking);
+  document.getElementById('s-total').textContent=fmtK(totalSpendSavings);
+  document.getElementById('o-approval').textContent=fmtK(approvalSavings);
+  document.getElementById('o-touch').textContent=fmtK(touchSavings);
+  document.getElementById('o-finance').textContent=fmtK(financeSavings);
+  document.getElementById('o-admin').textContent=fmtK(adminSavings);
+  document.getElementById('o-total').textContent=fmtK(totalOpSavings);
+
+  document.getElementById('pgrid').innerHTML=PLANS.map((p,i)=>{
+    const isR=i===idx;
+    return`<div class="pcard${isR?' rec':''}">${isR?'<div class="prec-badge">Recommended</div>':''}<div class="pname">${p.name}</div><div class="pprice" style="color:${p.color}">${p.price?'SAR '+p.price.toLocaleString():'Custom'}</div><div class="pcap">${p.travelers===Infinity?'Custom':p.travelers+' travelers'}</div></div>`;
+  }).join('');
+  const add=extras>0&&plan.price?`+ ${extras} extra travelers × SAR ${plan.extraT.toLocaleString()} = SAR ${(extras*plan.extraT).toLocaleString()} add-on. Total: SAR ${headcountPrice.toLocaleString()} / year.`:'';
+  document.getElementById('paddons').textContent=add;
+
+  // === RENDER DUAL PRICING PANEL ===
+  let pcHtml='';
+  if(materialDiff && headcountPrice){
+    // Material difference detected - show both options
+    const headcountSelected = pricingMethod==='headcount';
+    const volumeSelected = pricingMethod==='volume';
+    const spendPerTraveler = Math.round(spend/travelers);
+    const formatSpendPerT = spendPerTraveler.toLocaleString();
+
+    let explainText='';
+    if(scenario==='high-intensity'){
+      explainText=`<strong>High travel intensity detected.</strong> This company books premium / high-volume travel — SAR ${formatSpendPerT} per traveler is well above average. The headcount tier (${plan.name}) under-prices the value FlyAkeed delivers. Consider volume-based pricing to capture the strategic value.`;
+    } else if(scenario==='light-volume'){
+      explainText=`<strong>Light travel volume detected.</strong> This company has many travelers but low overall trip volume (SAR ${formatSpendPerT} per traveler). The headcount tier would overcharge them — volume-based pricing is more competitive. Floor: SAR 7,000.`;
+    }
+
+    pcHtml=`<div class="pricing-compare">
+      <div class="pc-hd">
+        <div class="pc-title">⚡ Pricing decision needed</div>
+        <span class="pc-tag">${Math.round(Math.abs(volumePrice-headcountPrice)/headcountPrice*100)}% gap</span>
+      </div>
+      <div class="pc-grid">
+        <div class="pc-option ${headcountSelected?'selected':''}" onclick="selectPricing('headcount')">
+          <div class="pc-opt-hd">
+            <div class="pc-opt-name">Headcount-based</div>
+            <div class="pc-opt-radio"></div>
+          </div>
+          <div class="pc-opt-price">SAR ${headcountPrice.toLocaleString()}</div>
+          <div class="pc-opt-basis">${plan.name} tier · ${travelers} travelers</div>
+        </div>
+        <div class="pc-option ${volumeSelected?'selected':''}" onclick="selectPricing('volume')">
+          <div class="pc-opt-hd">
+            <div class="pc-opt-name">Volume-based (${volumeRate}%)</div>
+            <div class="pc-opt-radio"></div>
+          </div>
+          <div class="pc-opt-price">SAR ${Math.round(volumePrice).toLocaleString()}</div>
+          <div class="pc-opt-basis">${volumeRate}% × SAR ${(spend/1000000).toFixed(1)}M spend${rawVolumePrice<FLOOR?' · floor applied':''}</div>
+        </div>
+      </div>
+      <div class="pc-explain">${explainText}</div>
+      <div class="pc-rate-slider">
+        <label>Adjust volume rate (4-6%) based on value provided</label>
+        <div class="pc-rate-row">
+          <input type="range" min="4" max="6" step="0.5" value="${volumeRate}" oninput="setVolumeRate(this.value)"/>
+          <span class="pc-rate-val" id="volRateVal">${volumeRate}%</span>
+        </div>
+      </div>
+    </div>`;
+  } else if(headcountPrice) {
+    // Aligned - show simple confirmation
+    pcHtml=`<div class="pricing-compare" style="background:var(--surface2);border-color:var(--border);">
+      <div class="pc-hd">
+        <div class="pc-title" style="color:var(--teal);">✓ Pricing aligned</div>
+      </div>
+      <div class="pc-explain" style="background:transparent;padding:0;">
+        Headcount price (SAR ${headcountPrice.toLocaleString()}) and volume-based price (${volumeRate}% × spend = SAR ${Math.round(volumePrice).toLocaleString()}) are within 20% of each other. <strong>Use the standard ${plan.name} tier.</strong>
+      </div>
+    </div>`;
+  }
+  document.getElementById('pricingCompare').innerHTML=pcHtml;
+
+  // === RENDER COST BREAKDOWN ===
+  document.getElementById('cb-method').textContent = '';
+  document.getElementById('cb-sub').textContent = subscriptionCost!=null ? fmtK(subscriptionCost) : 'Custom';
+  document.getElementById('cb-txmethod').textContent = txDescriptor;
+  document.getElementById('cb-tx').textContent = fmtK(txFeesBase);
+  document.getElementById('cb-uplift-row').style.display = paymentModel==='postpaid' ? '' : 'none';
+  document.getElementById('cb-uplift').textContent = '+ '+fmtK(postpaidUplift);
+  document.getElementById('cb-total').textContent = total!=null ? fmtK(total) : 'Custom';
+
+  // Customer-facing investment display (rounded down to nearest 5k for cleaner look)
+  const custInvest = document.getElementById('cust-invest');
+  if(custInvest){
+    if(total==null){ custInvest.textContent='Custom'; }
+    else {
+      const rounded = Math.floor(total/5000)*5000;
+      custInvest.textContent = fmtK(rounded);
+    }
+  }
+
+  // Strategic insight banner removed in customer version
+}
+calc();
+</script>
+</body>
+</html>
